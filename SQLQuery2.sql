@@ -24,6 +24,33 @@ BrandID INT FOREIGN KEY REFERENCES Brands(ID)
 )
 GO
 
+INSERT INTO Brands
+VALUES 
+('Dell'),
+('Lenovo'),
+('HP'),
+('Apple'),
+('Asus');
+
+INSERT INTO Laptops
+VALUES
+('MacBook Air 14', 1099.99, 4),
+('Dell XPS 13', 1299.99, 1),
+('Lenovo ThinkPad X1 Carbon', 1299.99, 2),
+('HP Spectre x360', 1499.99, 3),
+('MacBook Pro', 2099.99, 4),
+('MacBook Air 13', 999.99, 4),
+('ASUS Zenbook Pro 16X OLED', 1259.99, 5);
+
+INSERT INTO Phones
+VALUES
+('iPhone 13', 999.99, 4),
+('Dell Phone', 799.99, 1),
+('HP Mobile', 749.99, 3),
+('Lenovo Phone', 699.99, 2),
+('iPhone 14 Pro', 1099.99, 4);
+GO
+
 SELECT L.Name, L.Price, B.Name AS BrandName
 FROM Laptops L
 JOIN Brands B ON L.BrandID = B.ID
@@ -36,6 +63,7 @@ SELECT L.Name, L.Price, B.Name AS BrandName
 FROM Laptops L
 JOIN Brands B ON L.BrandID = B.ID
 WHERE CHARINDEX('s', B.Name) > 0;
+-- WHERE B.Name LIKE('%s%')
 
 SELECT * FROM Laptops
 WHERE Price BETWEEN 2000 AND 5000 OR Price > 5000
@@ -111,7 +139,17 @@ SELECT
 FROM Laptops
 WHERE Price > 1000;
 
-SELECT B.Name AS BrandName, SUM(P.Price) AS TotalPrice, COUNT(*) AS PhoneCount
-FROM Brands B
-JOIN Phones P ON B.ID = P.BrandID
+SELECT B.Name AS BrandName,
+COUNT(*) AS ProductCount,
+SUM(P.Price) AS TotalPrice
+FROM Phones P
+JOIN Brands B ON P.BrandID = B.ID
+GROUP BY B.Name, B.ID;
 
+SELECT B.Name AS BrandName,
+COUNT(*) AS ProductCount,
+SUM(L.Price) AS TotalPrice
+FROM Laptops L
+JOIN Brands B ON L.BrandID = B.ID
+GROUP BY B.Name, B.ID
+HAVING COUNT(*) >= 3;
